@@ -69,17 +69,30 @@ def RottenGIF(grid, file_name):
     # plt.show()
 
 
+def random_grid(x_dim, y_dim):
+    import random
+    p_rotten = .2
+    p_fresh = p_rotten + .6
+    grid = [[0 for _ in range(x_dim)] for _ in range(y_dim)]
+    for i in range(x_dim):
+        for j in range(y_dim):
+            rand_float = random.uniform(0, 1)
+            if rand_float < p_rotten:
+                grid[i][j] = 2
+            elif p_rotten < rand_float < p_fresh:
+                grid[i][j] = 1
+            else:
+                grid[i][j] = 0
+    return grid
+
+
 if __name__ == "__main__":
     import os
     path = os.getcwd() + "\\output"
 
-    x_dim = 1000
-    y_dim = 1000
-    grid = [[1 for _ in range(x_dim)] for _ in range(y_dim)]
-    grid[0][0] = 2
-    print(grid[0][0])
-    grid[9][9] = 0
-    print(grid)
+    x_dim = 25
+    y_dim = 25
+    grid = random_grid(x_dim, y_dim)
     print("Generating MP4")
     RottenGIF(grid, path + "\\rotteno.mp4")
     print("Generating GIF")
