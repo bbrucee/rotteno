@@ -52,12 +52,10 @@ class rotteno:
         R, C = len(self.grid), len(self.grid[0])
 
         # queue - all starting cells with rotting oranges
-        # queue = PriorityQueue()
         queue = collections.deque()
         for r, row in enumerate(self.grid):
             for c, val in enumerate(row):
                 if val == 2:
-                    # queue.put((0, (r, c)))
                     queue.append((r, c, 0))
 
         def neighbors(r, c):
@@ -110,16 +108,16 @@ if __name__ == "__main__":
     N = []
     bfs_times = []
     brute_force_times = []
-    for x_dim, y_dim in [(10, 10), (20, 20), (100, 100), (250, 250), (500, 500)]:
+    for x_dim, y_dim in zip(range(10, 1000, 100), range(10, 1000, 100)):
         N.append(x_dim*y_dim)
 
         t = Timer(lambda: bfs(x_dim, y_dim))
-        time = t.timeit(number=10)
+        time = t.timeit(number=20)
         print(f"BFS for {x_dim} x {y_dim}: {time}")
         bfs_times.append(time)
 
         t = Timer(lambda: brute_force(x_dim, y_dim))
-        time = t.timeit(number=10)
+        time = t.timeit(number=20)
         print(f"Brute Force for {x_dim} x {y_dim}: {time}")
         brute_force_times.append(time)
 
