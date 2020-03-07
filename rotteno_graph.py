@@ -20,10 +20,16 @@ class OrangeNode:
 
 
 class RottenoGrid:
-    def __init__(self, x_dim, y_dim):
-        self.grid = {}
-        self.x_dim = x_dim
-        self.y_dim = y_dim
+    def __init__(self, x_dim, y_dim, grid=None):
+        if grid:
+            self.grid = {}
+            self.input_grid(grid)
+            self.x_dim = len(grid)
+            self.y_dim = len(grid[0])
+        else:
+            self.grid = {}
+            self.x_dim = x_dim
+            self.y_dim = y_dim
 
     def __getitem__(self, coord):
         x, y = coord
@@ -69,6 +75,14 @@ class RottenoGrid:
                     grid[x][y] = 0
         return grid
 
+    def input_grid(self, grid):
+        for i, _ in enumerate(grid):
+            for j, _ in enumerate(grid[0]):
+                if grid[i][j] == 2:
+                    self.insert(False, i, j)
+                elif grid[i][j] == 1:
+                    self.insert(True, i, j)
+
     def turns_until_rot_bfs(self):
         # TODO
         pass
@@ -112,3 +126,6 @@ if __name__ == "__main__":
     grid.insert(True, 2, 1)
     grid.insert(True, 2, 2)
     print(grid.output_grid())
+
+    grid_2 = RottenoGrid(0, 0, test_grid)
+    print(grid_2.output_grid())
