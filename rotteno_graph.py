@@ -55,11 +55,11 @@ class RottenoGrid:
                 self.grid[(x + 1, y)].set_left(orange)
                 orange.set_right(self.grid[(x + 1, y)])
             if (x, y - 1) in self.grid:
-                self.grid[(x, y - 1)].set_right(orange)
-                orange.set_left(self.grid[(x, y - 1)])
+                self.grid[(x, y - 1)].set_up(orange)
+                orange.set_down(self.grid[(x, y - 1)])
             if (x, y + 1) in self.grid:
-                self.grid[(x, y + 1)].set_right(orange)
-                orange.set_left(self.grid[(x, y + 1)])
+                self.grid[(x, y + 1)].set_down(orange)
+                orange.set_up(self.grid[(x, y + 1)])
             self.grid.update({(x, y): orange})
 
     def output_grid(self):
@@ -84,35 +84,22 @@ class RottenoGrid:
                     self.insert(True, i, j)
 
     def turns_until_rot_bfs(self):
-        # TODO
-        pass
-        # import collections
-        #
-        # R, C = len(self.grid), len(self.grid[0])
-        #
-        # queue = collections.deque()
-        # for r, row in enumerate(self.grid):
-        #     for c, val in enumerate(row):
-        #         if val == 2:
-        #             queue.append((r, c, 0))
-        #
-        # def neighbors(r, c):
-        #     for nr, nc in ((r - 1, c), (r, c - 1), (r + 1, c), (r, c + 1)):
-        #         if 0 <= nr < R and 0 <= nc < C:
-        #             yield nr, nc
-        #
-        # d = 0
-        # while queue:
-        #     r, c, d = queue.popleft()
-        #     for nr, nc in neighbors(r, c):
-        #         if self.grid[nr][nc] == 1:
-        #             self.grid[nr][nc] = 2
-        #             queue.append((nr, nc, d+1))
-        #
-        # if any(1 in row for row in self.grid):
-        #     return -1
-        #
-        # return d
+        queue = []
+        for (x, y), orange in self.grid.items():
+            if not orange.freshness:
+                queue.append((orange, 0))
+
+        while queue:
+            orange, d = queue.pop(0)
+            for neighbor in [orange.left, orange.right, orange.up, orange.down]:
+                if neighbor and neighbor.freshness:
+                    neighbor.freshness = False
+                    queue.append((neighbor, d+1))
+
+        if any(orange.freshness for _, orange in self.grid.items()):
+            return -1
+
+        return d
 
 
 if __name__ == "__main__":
@@ -128,4 +115,5 @@ if __name__ == "__main__":
     print(grid.output_grid())
 
     grid_2 = RottenoGrid(0, 0, test_grid)
+    print(grid_2.turns_until_rot_bfs())
     print(grid_2.output_grid())
